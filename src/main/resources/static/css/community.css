@@ -1,0 +1,240 @@
+body{
+    background: #edeef0;
+    /*background-image: radial-gradient(tan 20%, transparent 0),*/
+    /*radial-gradient(tan 20%, transparent 0);*/
+    /*background-size: 30px 30px;*/
+    /*background-position: 0 0, 15px 15px;*/
+    /*background-color: #e1e8ee;*/
+}
+.main{
+    margin-left: 20px;
+    margin-right: 20px;
+    background-color: white;
+    width: 800px;
+    float: left;
+}
+
+.secondary{
+    margin-left: 20px;
+    margin-right: 20px;
+    background-color: white;
+}
+
+a:hover{
+    text-decoration:none
+}
+
+.question-tag{
+    margin-right: 5px
+}
+
+.question-rightul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.navbar-default{
+    background-color: #ffffff;
+}
+
+.question-righta{
+    cursor: pointer;
+    color: #155faa;
+}
+
+.label {
+     white-space: normal;
+     display: inline-block;
+     margin: 3px 3px;
+}
+
+.search-btn{
+    color: #fff;
+    background: #409eff;
+    border: #409eff;
+}
+
+.btn-publish{
+    float: right;
+    margin-bottom: 15px;
+}
+.media-object{
+    width:40px;
+    height:40px;
+}
+.head-photo{
+    margin-top: 5px;
+    width: 40px;
+    height: 40px;
+}
+.glyphicon-list{
+    margin-left: 15px;
+}
+
+.top-search{
+    margin: 0 auto;
+    width: 500px;
+}
+.top-input{
+    width:300px;
+}
+.search-local{
+     margin-top:20px;
+     height: 80px
+}
+.description-edit{
+    margin-right:5px;
+}
+.jumbotron{
+    marigin:30px;
+}
+.comment{
+    margin: 10px 0;
+}
+.btn-comment{
+    float:right;
+    margin-bottom: 10px;
+}
+
+.comment-content{
+    margin-bottom: 50px;
+}
+
+.comment-icon{
+    cursor: pointer;
+}
+.comment-icon2{
+    margin-left:10px;
+    cursor: pointer;
+}
+.comment-icon:hover{
+    color: #1d74c1;
+}
+.comments{
+    border-bottom: 1px solid #9999;
+    padding-bottom: 20px;
+}
+.comment-sup{
+    margin-top: 30px;
+}
+.menu{
+    margin-top: 25px;
+}
+.menu .active{
+    color: #2181d5;
+}
+.comment-sub{
+    border-radius: 5px;
+    margin-top: 15px;
+    border: 1px solid #e6e6e6;
+    padding: 15px;
+}
+.comment-subrev{
+    margin-top: 15px;
+}
+.comment-rev{
+    margin-top: 10px;
+    float: right;
+}
+.profile-right{
+    margin: 60px;
+}
+
+hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
+.navbar-default .navbar-nav>li>a:hover{
+    color: #00c4ff;
+    height: 45px;
+    border-bottom-style:solid;
+    border-bottom-color:#00c4ff;
+    /*background-color: #00c4ff;*/
+    transition: all 1s;
+    -webkit-transition:all 1s; /* Safari and Chrome */
+}
+
+.dropdown-menu{
+    box-shadow: 0 6px 12px #6995bc;
+}
+
+.nav-note{
+    background-color: #00c4ff;
+}
+
+.index-content{
+    margin-top: 15px;
+}
+
+.media:first-child{
+    margin-top: 15px;
+}
+h4:hover{
+    transform: translateX(30px);
+    transition: all .4s linear 0s;
+    -webkit-transition:all 1s; /* Safari and Chrome */
+    border-radius:25px;
+}
+
+.index-content a:link, .index-content
+a:visited, .index-content a:active {
+    transition: all .4s linear 0s;
+}
+
+.index-empty{
+    background: #655;
+    background-image: radial-gradient(tan 20%, transparent 0),
+    radial-gradient(tan 20%, transparent 0);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+}
+
+.main-header{
+    float: left;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    background-color: white;
+    width: 800px;
+
+}
+
+.main-author{
+   background-color: white;
+    height: 150px;
+    float: right;
+    margin-right: 15px;
+
+}
+
+.main-hotspot{
+    background-color: white;
+    height: 582px;
+    width: 450px;
+    margin-top: 35px;
+    float: right;
+    margin-right: 15px;
+}
+.header-left{
+    width: 300px;
+    float: left;
+}
+.header-right{
+    width: 150px;
+    float: right;
+    margin: 25px 25px;
+    font-size: 20px;
+}
+
+.question-right{
+    background-color: white;
+    width: 300px;
+    margin-right: 10%;
+}
+
+.footer{
+    padding: 10px 38%;
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/community.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <script type="application/javascript" src="/js/jquery-3.5.1.min.js"></script>
+    <script type="application/javascript" src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!-- 引入导航栏 -->
+<div th:insert="~{navgation :: nav}"></div>
+<!-- 错误提示 -->
+<div class="jumbotron">
+    <h1>出错啦！！！</h1>
+    <span th:text="${message}">服务太热啦，要不然稍等下再来试试！</span>
+    <p><a class="btn btn-primary btn-lg" href="/" role="button">回到主页</a></p>
+</div>
+<!-- 备案号 -->
+<div th:insert="~{footer :: foot}"></div>
+</body>
+</html>
