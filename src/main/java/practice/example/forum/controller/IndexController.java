@@ -54,5 +54,15 @@ public class IndexController {
          return "index";
     }
 
-
+    @GetMapping("/diary")
+    public String diary(HttpServletRequest request,
+                        Model model,
+                        @RequestParam(name = "page",defaultValue = "1") Integer page,
+                        @RequestParam(name = "size",defaultValue = "10") Integer size,
+                        @RequestParam(name = "tag",required = false)String tag){
+        PaginationDTO pagination = questionService.findListQuestionByTag(tag,page,size);
+        model.addAttribute("pagination",pagination);
+        model.addAttribute("search",tag);
+        return "/index";
+    }
 }

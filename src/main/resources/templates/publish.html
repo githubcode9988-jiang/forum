@@ -19,15 +19,15 @@
 <!-- 正文 -->
 <div class="container-fluid secondary">
     <div class="row">
-        <h2><span class="glyphicon glyphicon-plus" aria-hidden="true">发现</span></h2>
+        <h2><span class="glyphicon glyphicon-plus" aria-hidden="true">你的日记</span></h2>
         <hr>
         <div class="col-lg-9 .col-md-12 .col-sm-12 .col-xs-12">
             <form action="/publish" method="post">
                 <input type="hidden" name="id" th:value="${action}">
                 <div class="form-group">
-                    <label for="title">问题标题(简明扼要)</label>
+                    <label for="title">你今天写日记了吗?</label>
                     <input type="text" th:text="${title}" class="form-control" id="title"
-                           name="title" placeholder="问题标题..." autocomplete="off">
+                           name="title" placeholder="标题描述..." autocomplete="off">
                 </div>
                 <div id="test-editor" class="form-group">
                     <label for="description">问题补充(必填，请参照右侧提示);</label>
@@ -41,7 +41,7 @@
                             width  : "100%",
                             height : "375px",
                             path   : "js/lib/",
-                            placeholder: "请输入问题描述...",
+                            placeholder: "请写日记内容...",
                             delay: 0,
                             watch: false,
                             imageUpload: true,
@@ -51,30 +51,32 @@
                     });
                 </script>
                 <div class="form-group">
-                    <label for="tag">添加标题:</label>
+                    <label for="tag">添加标签:</label>
                     <input type="text" th:text="${tag}" class="form-control"
-                           id="tag" name="tag" autocomplete="off" placeholder="输入标题，以，号分割" onclick="showSelectTag()">
+                           id="tag" name="tag" autocomplete="off" placeholder="输入标签" onclick="showSelectTag()">
 
                     <div id="select-tag" style="display: none">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" th:each="tagvalue,tagValueSet : ${tags}"
                                 th:class="${tagValueSet.first ? 'active':''}">
                                 <a th:href="${'#'+tagvalue.categoryName}" aria-controls="home" role="tab"
-                                   data-toggle="tab" th:text="${tagvalue.categoryName}"></a>
+                                   data-toggle="tab" th:text="${tagvalue.categoryName}"
+                                   th:data-tag="${tagvalue.categoryName}" onclick="selectTag(this)">
+                                </a>
                             </li>
                         </ul>
 
-                        <div class="tab-content">
-                            <div role="tabpanel"  th:id="${tagvalue.categoryName}"
-                                 th:each="tagvalue : ${tags}"
-                                 th:class="${tagvalueStat.first ? 'active tab-pane' : 'tab-pane'}">
-                                <span class="label label-info" th:each="selecttag : ${tagvalue.tags}">
-                                    <span class="glyphicon glyphicon-tags" onclick="selectTag(this)"
-                                          th:text="${' '+selecttag}" th:data-tag="${selecttag}">
-                                    </span>
-                                </span>
-                            </div>
-                        </div>
+<!--                        <div class="tab-content">-->
+<!--                            <div role="tabpanel"  th:id="${tagvalue.categoryName}"-->
+<!--                                 th:each="tagvalue : ${tags}"-->
+<!--                                 th:class="${tagvalueStat.first ? 'active tab-pane' : 'tab-pane'}">-->
+<!--                                <span class="label label-info" th:each="selecttag : ${tagvalue.tags}">-->
+<!--                                    <span class="glyphicon glyphicon-tags" onclick="selectTag(this)"-->
+<!--                                          th:text="${' '+selecttag}" th:data-tag="${selecttag}">-->
+<!--                                    </span>-->
+<!--                                </span>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
                 </div>
 
@@ -92,7 +94,7 @@
             </form>
         </div>
         <div class="col-lg-3 .col-md-12 .col-sm-12 .col-xs-12">
-            <h2>问题发起指南</h2>
+            <h2>准备好记录你的人生了吗</h2>
         </div>
     </div>
 </div>

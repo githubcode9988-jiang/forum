@@ -30,4 +30,23 @@ public interface NotificationExcMapper {
      * @return
      */
     List<Notification> findNotificationByLetter(Integer userAccountId, Integer offset, Integer size, Integer type);
+
+    /**
+     *   查询未读消息
+     * @param userAccountId
+     * @param status
+     * @param commentType
+     * @param questionType
+     * @return
+     */
+    Long unReadByReceiver(Integer userAccountId, Integer status, Integer commentType, Integer questionType);
+
+    /**
+     *   查询未读私信
+     * @param userAccountId
+     * @param status
+     * @param type
+     * @return
+     */
+    Long unReadByLetter(Integer userAccountId, Integer status, Integer type);
 }

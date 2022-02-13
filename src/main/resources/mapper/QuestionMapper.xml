@@ -71,6 +71,12 @@
       question where creator = #{userAccoundId}
   </select>
 
+  <select id="getQuestionCountByTag" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(1)
+    from
+    question where tag = #{tag}
+  </select>
+
   <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
@@ -93,6 +99,13 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
+  <update id="updateToLikeCount" parameterType="practice.example.forum.model.Question">
+    update question
+    set
+      like_count = like_count + #{likeCount,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
   <update id="incCommentCount" parameterType="practice.example.forum.model.Question">
     update question
     set comment_count = comment_count + #{commentCount,jdbcType=BIGINT}
@@ -101,6 +114,19 @@
 
   <select id="selectRelated" parameterType="practice.example.forum.model.Question" resultMap="BaseResultMap">
     select * from question where id != #{id} and tag regexp #{tag}
+  </select>
+
+  <select id="findListQuestionByTag" parameterType="practice.example.forum.dto.QuestionQueryDTO" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List"/>
+      from question
+      <where>
+        <if test="search!=null and search!=''">
+          and tag regexp #{search}
+        </if>
+      </where>
+      order by gmt_create desc
+      limit #{offset,jdbcType=BIGINT},#{size,jdbcType=BIGINT}
   </select>
 
 </mapper>

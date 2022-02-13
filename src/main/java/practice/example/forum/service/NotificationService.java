@@ -11,7 +11,12 @@ import practice.example.forum.model.User;
 public interface NotificationService {
     PaginationDTO list(String accountId, Integer page, Integer size);
 
-    Long unreadCount(String accountId);
+    /**
+     *  回复问题，评论未读数
+     * @param accountId
+     * @return
+     */
+    Long unReadByReceiver(String accountId);
 
     NotificationDTO read(String id, User user);
 
@@ -31,4 +36,11 @@ public interface NotificationService {
      * @return
      */
     PaginationDTO listByLetter(String accountId, Integer page, Integer size);
+
+    /**
+     *  回复私信未读数
+     * @param accountId
+     * @return
+     */
+    Long unReadByLetter(String accountId);
 }

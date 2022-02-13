@@ -27,4 +27,23 @@ public interface QuestionMapper {
 
     List<Question> selectRelated(Question question);
 
+    /**
+     *  通过tag查询数据
+     * @param questionQueryDTO
+     * @return
+     */
+    List<Question> findListQuestionByTag(QuestionQueryDTO questionQueryDTO);
+
+    /**
+     *  通过该tag条数
+     * @param tag
+     * @return
+     */
+    Integer getQuestionCountByTag(String tag);
+
+    /**
+     *  日记点赞
+     * @param likeCount
+     */
+    void updateToLikeCount(Question likeCount);
 }

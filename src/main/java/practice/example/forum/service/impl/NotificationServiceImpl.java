@@ -87,13 +87,17 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Long unreadCount(String accountId) {
-        NotificationExample example = new NotificationExample();
-        example.createCriteria().andReceiverEqualTo(Long.valueOf(accountId))
-                .andStatusEqualTo(NotificationTypeEnum.UNREAD.getStatus())
-                .andTypeEqualTo(NotificationEnum.REPLY_QUESTION.getType())
-                .andTypeEqualTo(NotificationEnum.REPLY_COMMENT.getType());
-        return notificationMapper.countByExample(example);
+    public Long unReadByReceiver(String accountId) {
+       return  notificationExcMapper.unReadByReceiver(Integer.valueOf(accountId),NotificationTypeEnum.UNREAD.getStatus(),
+                                                NotificationEnum.REPLY_COMMENT.getType(),
+                                                NotificationEnum.REPLY_QUESTION.getType());
+    }
+
+
+    @Override
+    public Long unReadByLetter(String accountId) {
+        return  notificationExcMapper.unReadByLetter(Integer.valueOf(accountId),NotificationTypeEnum.UNREAD.getStatus(),
+                NotificationEnum.INVITE_MESSAGE.getType());
     }
 
     @Override
@@ -178,4 +182,5 @@ public class NotificationServiceImpl implements NotificationService {
         paginationDTO.setData(notificationDTOS);
         return paginationDTO;
     }
+
 }

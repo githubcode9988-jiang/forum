@@ -66,8 +66,8 @@ public class PublishController {
         User user = (User) session.getAttribute("user");
 
         //过滤非法标签
-        String invalidTags = TagCache.filterInvalid(tag);
-        if(StringUtils.isNotBlank(invalidTags)){
+        boolean invalidTags = TagCache.filterInvalid(tag);
+        if(!invalidTags){
             model.addAttribute("error","有非法标签！"+invalidTags);
             return "publish";
         }

@@ -24,4 +24,19 @@ public interface QuestionService {
     void incView(String id);
 
     List<QuestionDTO> selectRelated(QuestionDTO questionDTO);
+
+    /**
+     *   通过tag查询数据
+     * @param tag
+     * @param page
+     * @param size
+     * @return
+     */
+    PaginationDTO findListQuestionByTag(String tag, Integer page, Integer size);
+
+    /**
+     *  日记点赞
+     * @param id
+     */
+    void incLikeCount(String id);
 }

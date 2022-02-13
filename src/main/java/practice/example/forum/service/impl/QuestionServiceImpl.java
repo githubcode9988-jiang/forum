@@ -195,4 +195,57 @@ public class QuestionServiceImpl implements QuestionService {
         }).collect(Collectors.toList());
         return queryDTOS;
     }
+
+    @Override
+    public PaginationDTO findListQuestionByTag(String tag, Integer page, Integer size) {
+
+        //分页 size*(page-1),size
+        Integer offset = size * (page-1);
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(tag);
+        questionQueryDTO.setOffset(offset);
+        questionQueryDTO.setSize(size);
+        List<Question> listQuestion = questionMapper.findListQuestionByTag(questionQueryDTO);
+
+        List<QuestionDTO> res = new ArrayList<>();
+        PaginationDTO paginationDTO = new PaginationDTO();
+        for (Question question : listQuestion) {
+            UserExample example = new UserExample();
+            example.createCriteria().andAccountIdEqualTo(String.valueOf(question.getCreator()));
+            List<User> users = userMapper.selectByExample(example);
+            QuestionDTO queryDTO = new QuestionDTO();
+            BeanUtils.copyProperties(question,queryDTO);
+            queryDTO.setUser(users.get(0));
+            res.add(queryDTO);
+        }
+
+        Integer total = questionMapper.getQuestionCountByTag(tag);
+        paginationDTO.setData(res);
+        Integer totalPage;
+
+        if(total % size == 0){
+            totalPage = total / size;
+        }else{
+            totalPage = total / size + 1;
+        }
+
+        if(page < 1){
+            page = 1;
+        }
+        if(page > totalPage){
+            page = totalPage;
+        }
+
+        paginationDTO.setPagination(totalPage,page);
+        return paginationDTO;
+    }
+
+    @Override
+    public void incLikeCount(String id) {
+        //TODO 注意问题高并发情况下 点赞数会出现数据不一致
+        Question likeCount = new Question();
+        likeCount.setLikeCount(1);
+        likeCount.setId(Integer.valueOf(id));
+        questionMapper.updateToLikeCount(likeCount);
+    }
 }

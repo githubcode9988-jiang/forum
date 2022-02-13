@@ -103,11 +103,11 @@
                 <a th:href="@{/profile/questions/(page=${pagination.getPage()})}" th:class="${section == 'questions' ? 'list-group-item active':''}">我的问题</a>
                 <a th:href="@{/profile/replies/(page=${pagination.getPage()})}" th:class="${section == 'replies' ? 'list-group-item active':''}">
                     最新回复
-                    <span class="badge" th:text="${session.unreadMessage}"></span>
+                    <span class="badge" th:text="${session.unreadReceive}"></span>
                 </a>
                 <a th:href="@{/profile/letters/(page=${pagination.getPage()})}" th:class="${section == 'letters' ? 'list-group-item active':''}">
                     私信
-                    <span class="badge" th:text="${session.unreadMessage}"></span>
+                    <span class="badge" th:text="${session.unReadByLetter}"></span>
                 </a>
             </div>
         </div>

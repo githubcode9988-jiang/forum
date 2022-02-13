@@ -93,13 +93,15 @@ function collapseComments(e){
 function selectTag(e){
      var previous = $("#tag").val();
      var value = e.getAttribute("data-tag");
-     if(previous.indexOf(value) == -1){
-         if(previous){
-             $("#tag").val(previous + ',' + value);
-         }else{
-             $("#tag").val(value);
-         }
-     }
+     $("#tag").val(value);
+
+     // if(previous.indexOf(value) == -1){
+     //     if(previous){
+     //         $("#tag").val(previous + ',' + value);
+     //     }else{
+     //         $("#tag").val(value);
+     //     }
+     // }
 
 }
 

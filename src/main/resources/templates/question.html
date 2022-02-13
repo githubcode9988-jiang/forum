@@ -63,10 +63,15 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <span>
                         <a><span class="glyphicon glyphicon-envelope description-edit"> 添加评论</span></a>
-                        <a th:if="${session.user != null && (session.user.accountId  == question.creator)}" th:href="@{'/edit/'+${question.id}}" class="community-menu">
+                        <a th:if="${session.user != null && (session.user.accountId  == question.creator)}"
+                           th:href="@{'/edit/'+${question.id}}" class="community-menu">
                             <span class="glyphicon glyphicon-pencil description-edit"> 编辑</span>
                         </a>
-                        <a><span class="glyphicon glyphicon-send description-edit"> 邀请</span></a>
+                        <a th:href="@{'/likeCount/'+${question.id}}">
+                            <img src="/images/starts.png" style="width: 20px">
+                            <span>点赞</span>
+                            <span th:text="${question.likeCount}"></span>
+                        </a>
                     </span>
                 </div>
             </div>
