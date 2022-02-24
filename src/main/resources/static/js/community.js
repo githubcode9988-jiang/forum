@@ -188,3 +188,94 @@ function inquiry(){
     });
 
 }
+
+/**
+ *  请求关注
+ */
+function askAttention(e){
+    var userId = $("#userId").val();
+    var authorName = $("#question_author").html();
+    var data = {
+        "myAccountId":userId,
+        "acceptUserName":authorName
+    }
+    console.log(JSON.stringify(data));
+    $.ajax({
+        type: "GET",
+        dataType:"json",
+        url: "/attention",
+        data: data,
+        success:function(response){
+            console.log(response);
+            if(response.code == 200){
+                alert(response.message);
+            }else{
+                alert(response.message);
+            }
+        }
+    });
+}
+
+/**
+ *  点赞效果
+ */
+function likeCount(){
+    var id = $("#question_id").val();
+    var val = $("span.likecount > img")[0].src;
+    var data = JSON.stringify({
+        "targetId":id,
+        "type":1
+    })
+    $.ajax({
+        type: "POST",
+        contentType: "application/json;charset=UTF-8",
+        dataType:"json",
+        url: "/likeCount",
+        data: data,
+        success:function(response){
+              if(response.code == 200){
+                var path = '/images/night.png'
+                  $("span.likecount > img").fadeOut("slow",function(){
+                      $("span.likecount > img").attr('src',path);
+                  })
+                  $("span.likecount > img").fadeIn("slow",function(){
+                      $("span.likecount > img").attr('src',path);
+                  })
+                  $("span.likecount > button").attr('style','pointer-events:none');
+                  $("span.likecount > button").text("已点赞");
+              }else{
+
+              }
+        }
+    });
+}
+
+/**
+ * 接受和拒绝关注
+ * @param note 接受和拒绝标识
+ */
+function acceptAttention(operType){
+     var notifier=$("#notifier").val()
+     var receiver=$("#receiver").val()
+     var notid=$("#notid").val()
+    $.ajax({
+        type: "GET",
+        contentType: "application/json",
+        dataType:"json",
+        url: "/operFriendsRequest",
+        data: {"sendAccountId":notifier,
+               "acceptAccountId":receiver,
+               "operType":operType,
+               "notid":notid},
+        success:function(response){
+            console.log(response);
+            if(response.code == 200){
+                alert("操作成功！");
+                $("#btn_notifier").hide();
+                $("#btn_receiver").hide();
+            }else{
+                alert("操作失败！")
+            }
+        }
+    });
+}

@@ -94,7 +94,21 @@
             </form>
         </div>
         <div class="col-lg-3 .col-md-12 .col-sm-12 .col-xs-12">
-            <h2>准备好记录你的人生了吗</h2>
+            <a href="http://127.0.0.1:8972/api/city/101010100">获取北京天气信息</a>
+            <a href="http://pv.sohu.com/cityjson?ie=utf-8">获取本地城市</a>
+            <button type="button" id="btn_weather" onclick="getWeather()">获取id</button>
+            <script type="application/javascript">
+               function getWeather(){
+                    $.ajax({
+                        url:"http://pv.sohu.com/cityjson?ie=utf-8",
+                        type:'get',
+                        dataType: 'jsonp',
+                        function(data) {
+                            alert(data);
+                        }
+                    });
+                }
+            </script>
         </div>
     </div>
 </div>

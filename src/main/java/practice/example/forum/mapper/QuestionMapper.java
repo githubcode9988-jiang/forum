@@ -46,4 +46,11 @@ public interface QuestionMapper {
      * @param likeCount
      */
     void updateToLikeCount(Question likeCount);
+
+    /**
+     *  查询出所有日记
+     * @return
+     * @param message
+     */
+    List<Question> queryByTagAllQuestion(String message);
 }

@@ -3,17 +3,22 @@ package practice.example.forum.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import practice.example.forum.dto.PaginationDTO;
-import practice.example.forum.dto.QuestionDTO;
-import practice.example.forum.dto.QuestionQueryDTO;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import practice.example.forum.dto.*;
+import practice.example.forum.enums.ContentTypeEnum;
+import practice.example.forum.enums.LikeTypeEnum;
+import practice.example.forum.enums.NotificationEnum;
+import practice.example.forum.enums.NotificationTypeEnum;
 import practice.example.forum.exception.CustomizeErrorCode;
 import practice.example.forum.exception.CustomizeException;
+import practice.example.forum.mapper.NotificationMapper;
 import practice.example.forum.mapper.QuestionMapper;
+import practice.example.forum.mapper.ThumbMapper;
 import practice.example.forum.mapper.UserMapper;
-import practice.example.forum.model.Question;
-import practice.example.forum.model.User;
-import practice.example.forum.model.UserExample;
+import practice.example.forum.model.*;
 import practice.example.forum.service.QuestionService;
 
 import java.util.ArrayList;
@@ -33,6 +38,15 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    ThumbMapper thumbMapper;
+
+    @Autowired
+    NotificationMapper notificationMapper;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
 
     @Override
@@ -129,11 +143,6 @@ public class QuestionServiceImpl implements QuestionService {
         return paginationDTO;
     }
 
-    /**
-     *   点击index页问题进入问题详情
-     * @param id
-     * @return
-     */
     @Override
     public QuestionDTO getById(String id) {
         Question question = questionMapper.getById(Long.valueOf(id));
@@ -160,6 +169,8 @@ public class QuestionServiceImpl implements QuestionService {
             question.setLikeCount(0);
             question.setCommentCount(0);
             questionMapper.create(question);
+            //对应数据加入缓存
+            redisTemplate.opsForZSet().add(ContentTypeEnum.DIARY.getMessage(),question.getTitle(),question.getViewCount());
         }else{
             //更新
             question.setGmtModified(System.currentTimeMillis());
@@ -169,12 +180,15 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void incView(String id) {
+    public void incView(QuestionDTO questionDTO) {
         //TODO 注意问题高并发情况下 阅读数会出现数据不一致
         Question record = new Question();
         record.setViewCount(1);
-        record.setId(Integer.valueOf(id));
+        record.setId(Integer.valueOf(questionDTO.getId()));
         questionMapper.updateToViewCount(record);
+        //缓存中浏览量加1
+        redisTemplate.opsForZSet().incrementScore(
+                ContentTypeEnum.DIARY.getMessage(),questionDTO.getTitle(),1);
     }
 
     @Override
@@ -240,12 +254,86 @@ public class QuestionServiceImpl implements QuestionService {
         return paginationDTO;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public void incLikeCount(String id) {
+    public ResultDTO incLikeCount(ThumbDTO thumbDTO) {
         //TODO 注意问题高并发情况下 点赞数会出现数据不一致
-        Question likeCount = new Question();
-        likeCount.setLikeCount(1);
-        likeCount.setId(Integer.valueOf(id));
-        questionMapper.updateToLikeCount(likeCount);
+        Question question = questionMapper.getById(thumbDTO.getTargetId());
+        if(thumbDTO.getUser() == null){
+            throw new CustomizeException(CustomizeErrorCode.NO_LOGIN);
+        }
+        if(thumbDTO.getType() == null || !LikeTypeEnum.isExist(thumbDTO.getType())){
+            throw new CustomizeException(CustomizeErrorCode.CONTENT_IS_EMPTY);
+        }
+        if(thumbDTO.getType() == LikeTypeEnum.NO_LIKE.getType()){
+            return ResultDTO.okOf(CustomizeErrorCode.CAN_NOT_LIKE_AGAIN.getCode());
+        }
+        //点赞日记
+        ThumbExample thumbExample = new ThumbExample();
+        thumbExample.createCriteria().andTargetIdEqualTo(thumbDTO.getTargetId())
+                                     .andTypeEqualTo(thumbDTO.getType())
+                .andLikerEqualTo(Long.valueOf(thumbDTO.getUser().getAccountId()));
+        List<Thumb> thumbs = thumbMapper.selectByExample(thumbExample);
+        //查询点赞表中是否已经有记录
+        if(thumbs.size() != 0){
+           return ResultDTO.errorOf(CustomizeErrorCode.CAN_NOT_LIKE_AGAIN);
+        }
+        //插入记录
+        Thumb thumb = new Thumb();
+        BeanUtils.copyProperties(thumbDTO,thumb);
+        thumb.setTargetId(thumbDTO.getTargetId());
+        thumb.setLiker(Long.valueOf(thumbDTO.getUser().getAccountId()));
+        thumbMapper.insert(thumb);
+        //增加点赞
+        if(thumb.getType() == LikeTypeEnum.DIARY.getType())
+        question.setLikeCount(1);
+        question.setId(Integer.valueOf(thumb.getTargetId().toString()));
+        questionMapper.updateToLikeCount(question);
+        //创建通知
+        createNotify(thumb,question.getCreator(),thumbDTO.getUser().getName(),question.getTitle(), NotificationEnum.LIKE_SUCCESS, Long.valueOf(question.getId()));
+        return ResultDTO.okOf();
+    }
+
+    @Override
+    public ResultDTO isLikeCount(ThumbDTO thumbDTO) {
+        if(thumbDTO.getUser() == null){
+            throw new CustomizeException(CustomizeErrorCode.NO_LOGIN);
+        }
+        if(thumbDTO.getType() == null || !LikeTypeEnum.isExist(thumbDTO.getType())){
+            throw new CustomizeException(CustomizeErrorCode.CONTENT_IS_EMPTY);
+        }
+        if(thumbDTO.getType() == LikeTypeEnum.NO_LIKE.getType()){
+            return ResultDTO.okOf(CustomizeErrorCode.CAN_NOT_LIKE_AGAIN.getCode());
+        }
+        //点赞日记
+        ThumbExample thumbExample = new ThumbExample();
+        thumbExample.createCriteria().andTargetIdEqualTo(thumbDTO.getTargetId())
+                .andTypeEqualTo(thumbDTO.getType())
+                .andLikerEqualTo(Long.valueOf(thumbDTO.getUser().getAccountId()));
+        List<Thumb> thumbs = thumbMapper.selectByExample(thumbExample);
+        //查询点赞表中是否已经有记录
+        if(thumbs.size() != 0){
+            return ResultDTO.errorOf(CustomizeErrorCode.CAN_NOT_LIKE_AGAIN);
+        }else{
+            return ResultDTO.okOf();
+        }
+    }
+
+    public void createNotify(Thumb thumb, Long receiver,
+                             String notifierName, String outerTitle, NotificationEnum notificationType, Long outerId){
+        if(receiver.equals(thumb.getLiker())){
+            //回复人为自己时不需要创建通知
+            return;
+        }
+        Notification notification = new Notification();
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setType(notificationType.getType());
+        notification.setOuterid(outerId);
+        notification.setNotifier(thumb.getLiker());
+        notification.setStatus(NotificationTypeEnum.UNREAD.getStatus());
+        notification.setReceiver(receiver);
+        notification.setNotifierName(notifierName);
+        notification.setOuterTitle(outerTitle);
+        notificationMapper.insert(notification);
     }
 }

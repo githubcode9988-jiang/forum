@@ -43,4 +43,35 @@ public interface NotificationService {
      * @return
      */
     Long unReadByLetter(String accountId);
+    /**
+     *  查询私信
+     * @param accountId
+     * @param page
+     * @param size
+     * @return
+     */
+    PaginationDTO listByLikeCount(String accountId, Integer page, Integer size);
+
+    /**
+     *  查询关注
+     * @param accountId
+     * @param page
+     * @param size
+     * @return
+     */
+    PaginationDTO listByAttention(String accountId, Integer page, Integer size);
+
+    /**
+     *  通过用户id查询关注信息
+     * @param accountId
+     * @return
+     */
+    Long unReadByAttention(String accountId);
+
+    /**
+     *  查询点赞通知
+     * @param accountId
+     * @return
+     */
+    Long unReadByLike(String accountId);
 }

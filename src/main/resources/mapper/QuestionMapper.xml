@@ -49,6 +49,10 @@
     limit #{offset,jdbcType=BIGINT},#{size,jdbcType=BIGINT}
   </select>
 
+  <select id="queryByTagAllQuestion" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from question where tag = #{message}
+  </select>
+
   <select id="getQuestionCount" resultType="java.lang.Integer" parameterType="java.lang.String">
     select count(1) from question
     <where>

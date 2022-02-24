@@ -8,7 +8,9 @@ public enum NotificationEnum {
 
     REPLY_QUESTION(1,"回复了问题"),
     REPLY_COMMENT(2,"回复了评论"),
-    INVITE_MESSAGE(3,"邀请作者回复");
+    INVITE_MESSAGE(3,"邀请作者回复"),
+    LIKE_SUCCESS(4,"点赞成功"),
+    ATTENTION_USER(5,"请求关注");
 
     private int type;
     private String name;

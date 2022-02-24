@@ -5,6 +5,8 @@ body{
     /*background-size: 30px 30px;*/
     /*background-position: 0 0, 15px 15px;*/
     /*background-color: #e1e8ee;*/
+/*url(https://cdn.cnblogs.com/jsDelivr/gh/BNDong/Cnblogs-Theme-SimpleMemory@v2.0.2/dist/images/6d995b2….webp) */
+/*center center / cover no-repeat rgb(34, 34, 34);*/
 }
 .main{
     margin-left: 20px;
@@ -230,7 +232,7 @@ a:visited, .index-content a:active {
     float: left;
 }
 .header-right{
-    width: 150px;
+    width: 230px;
     float: right;
     margin: 25px 25px;
     font-size: 20px;
@@ -244,4 +246,13 @@ a:visited, .index-content a:active {
 
 .footer{
     padding: 10px 38%;
+}
+
+.like{
+    font-size:66px;
+    color:#ccc;
+    cursor:pointer;
+}
+.cs{
+    color:#f00;
 }

@@ -15,6 +15,30 @@
     <script type="application/javascript" src="/js/lib/marked.min.js"></script>
     <script type="application/javascript" src="/js/lib/prettify.min.js"></script>
 </head>
+<script th:inline="javascript">
+
+    $(document).ready(function(){
+        var questionid = [[${question.getId()}]];
+        var data = JSON.stringify({
+            "targetId":questionid,
+            "type":1
+        })
+        $.ajax({
+            type: "POST",
+            contentType: "application/json;charset=UTF-8",
+            dataType:"json",
+            url: "/isLikeCount",
+            data: data,
+            success:function(response){
+                if(response.code == 2012){
+                    $("span.likecount > img").attr('src','/images/night.png');
+                    $("span.likecount > button").attr('style','pointer-events:none');
+                    $("span.likecount > button").text("已点赞");
+                }
+            }
+        });
+    })
+</script>
 <body>
 <!-- 引入导航栏 -->
 <div th:insert="~{navgation :: nav}"></div>
@@ -27,9 +51,7 @@
                 <span th:text="${question.getTitle()}"></span>
             </h2>
         </div>
-
         <div class="col-lg-9 .col-md-12 .col-sm-12 .col-xs-12 main-line">
-
             <!-- 正文 -->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <span>
@@ -61,17 +83,15 @@
 
                 <!-- 编辑 -->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <span>
+                    <span class="likecount">
                         <a><span class="glyphicon glyphicon-envelope description-edit"> 添加评论</span></a>
                         <a th:if="${session.user != null && (session.user.accountId  == question.creator)}"
                            th:href="@{'/edit/'+${question.id}}" class="community-menu">
                             <span class="glyphicon glyphicon-pencil description-edit"> 编辑</span>
                         </a>
-                        <a th:href="@{'/likeCount/'+${question.id}}">
-                            <img src="/images/starts.png" style="width: 20px">
-                            <span>点赞</span>
+                            <img id="like" src="/images/starts.png" style="width: 20px">
+                            <button style="" type="button" onclick="likeCount()">点赞</button>
                             <span th:text="${question.likeCount}"></span>
-                        </a>
                     </span>
                 </div>
             </div>
@@ -82,7 +102,6 @@
                 </h3>
                 <hr >
             </div>
-
             <!-- 回复内容 -->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-content">
                 <div class="media" th:each="comment : ${comments}">
@@ -126,7 +145,6 @@
                     <h4>提交回复</h4>
                 </div>
             </div>
-
             <!-- 回复输入框 -->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section">
                 <div class="media">
@@ -149,12 +167,14 @@
         <!--右边框 -->
         <div class="col-lg-2 .col-md-12 .col-sm-12 .col-xs-12 question-right">
             <h6>发起人</h6>
-            <span><img class="media-object img-rounded"  th:src="${question.getUser().getAvatarUrl()}">
-                  <span th:text="${question.getUser().getName()}"></span>
+            <input type="hidden" id="userId" th:value="${session.user.getAccountId()}">
+            <button type="button" class="btn btn-info" onclick="askAttention(this)">请求关注</button>
+            <span>
+                <img class="media-object img-rounded"  th:src="${question.getUser().getAvatarUrl()}">
+                <span id="question_author" th:text="${question.getUser().getName()}"></span>
             </span>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
-            <span>邀请询问</span>
             <div class="input-group">
                 <input type="text" id="question_inquiry"  class="form-control" placeholder="...." aria-describedby="basic-addon1">
                 <button type="button" class="btn btn-default"  onclick="inquiry()" style="float:right;margin: 10px">询问他(她)</button>

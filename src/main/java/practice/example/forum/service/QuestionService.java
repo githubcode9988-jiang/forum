@@ -2,6 +2,8 @@ package practice.example.forum.service;
 
 import practice.example.forum.dto.PaginationDTO;
 import practice.example.forum.dto.QuestionDTO;
+import practice.example.forum.dto.ResultDTO;
+import practice.example.forum.dto.ThumbDTO;
 import practice.example.forum.model.Question;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public interface QuestionService {
 
     void createOrUpdate(Question question);
 
-    void incView(String id);
+    void incView(QuestionDTO questionDTO);
 
     List<QuestionDTO> selectRelated(QuestionDTO questionDTO);
 
@@ -36,7 +38,14 @@ public interface QuestionService {
 
     /**
      *  日记点赞
-     * @param id
+     * @param thumbDTO
      */
-    void incLikeCount(String id);
+    ResultDTO incLikeCount(ThumbDTO thumbDTO);
+
+    /**
+     *  是否已经点赞
+     * @param thumbDTO
+     * @return
+     */
+    ResultDTO isLikeCount(ThumbDTO thumbDTO);
 }

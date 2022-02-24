@@ -44,6 +44,14 @@
         order by gmt_create desc limit #{offset},#{size}
     </select>
 
+    <select id="findNotificationByAttention" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from notification where receiver =#{userAccountId,jdbcType=BIGINT}
+        and type = #{type,jdbcType=BIGINT}
+        order by gmt_create desc limit #{offset},#{size}
+    </select>
+
     <select id="unReadByReceiver" parameterType="java.lang.Integer" resultType="java.lang.Long">
         select
         count(1)

@@ -56,6 +56,16 @@ public class ProfileController {
             model.addAttribute("section","letters");
             model.addAttribute("sectionName","你的私信");
             model.addAttribute("pagination",paginationDTO);
+        }else if("likecount".equals(action)){
+            PaginationDTO paginationDTO = notificationService.listByLikeCount(user.getAccountId(),page,size);
+            model.addAttribute("section","likecount");
+            model.addAttribute("sectionName","你的点赞");
+            model.addAttribute("pagination",paginationDTO);
+        }else if("attention".equals(action)){
+            PaginationDTO paginationDTO = notificationService.listByAttention(user.getAccountId(),page,size);
+            model.addAttribute("section","attention");
+            model.addAttribute("sectionName","你的关注");
+            model.addAttribute("pagination",paginationDTO);
         }
 
         return "profile";

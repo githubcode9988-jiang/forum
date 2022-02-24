@@ -25,8 +25,8 @@
              <span class="icon-bar"></span>
            </button>
            <div >
-             <img class="head-photo img-circle nav-logo" src="/images/icon.png">
-             <a class="navbar-brand" href="/">笔记分享</a>
+             <img class="head-photo img-circle nav-logo" src="/images/summer.png">
+             <a class="navbar-brand" href="/">夏季日记</a>
            </div>
          </div>
 
@@ -63,12 +63,16 @@
 
              <li   th:if="${session.user == null}">
                <a href="https://gitee.com/oauth/authorize?client_id=e525273cb1abea8c1840042fc9546a547ebebf732fd7fcd89034673452ec7210&redirect_uri=http://localhost:8887/callback&response_type=code&state=1">
-                 登录</a>
+                 Gitee登录</a>
+             </li>
+             <li   th:if="${session.user == null}">
+               <a href="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx97efc5965e47b1db&redirect_uri=http%3A%2F%2F368d-211-146-16-132.ngrok.io%2Fcallbackweixin&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect">
+                 微信登录</a>
              </li>
            </ul>
-         </div><!-- /.navbar-collapse -->
+         </div>
 
-       </div><!-- /.container-fluid -->
+       </div>
      </nav>
    </div>
 </body>

@@ -20,4 +20,5 @@ public class NotificationDTO {
     private String typeName;
     private Integer type;
     private String message;
+    private Long receiver;
 }

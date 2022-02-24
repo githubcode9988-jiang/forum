@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="/css/community.css"/>
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
     <script type="application/javascript" src="/js/jquery-3.5.1.min.js"></script>
+    <script type="application/javascript" src="/js/qrcode.js"></script>
     <script type="application/javascript" src="/js/bootstrap.min.js"></script>
     <script type="application/javascript" src="/js/mouseenter.js"></script>
-
+    <script type="application/javascript" src="/js/community.js"></script>
 </head>
 <script type="application/javascript">
     // 通过community.js中传来的closable判断登录
@@ -21,6 +22,28 @@
         }
     }
 
+    $(document).ready(function(){
+        $.ajax({
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType:"json",
+            url: "/queryAllDiary",
+            success:function(response){
+                var topDiary = response.data;
+                for(let i = 0; i < topDiary.title.length;i++){
+                    var aDiary = $("<a/>",{
+                        "html":topDiary.title[i],
+                        "href":"/question/"+topDiary.questionId[i]
+                    });
+                    var liDiary = $("<li/>", {
+                        "class": "list-group-item list-group-item-success",
+                        "html": aDiary
+                    });
+                    $("#hotDiary").append(liDiary);
+                }
+            }
+        });
+    })
 </script>
 <body>
   <!-- 引入导航栏 -->
@@ -49,40 +72,71 @@
                 <span ></span>
             </a>
             <span class="header-right">
+                <img  src="/images/novel.png" style="width: 20px">
                 <a th:href="@{/diary/(page=1,tag='日记')}">
                     <span>日记</span>
                 </a>
+                <img src="/images/muisc.png" style="width: 20px">
                 <span>音乐</span>
+                <img src="/images/code.png" style="width: 20px">
                 <span>编程</span>
+                 <div class="panel panel-default">
+                       <div id="qrcode">
+                            <button type="button" onclick="output()">login</button>
+                       </div>
+                     <a href="/qrcode">login</a>
+                 </div>
+                <script type="application/javascript">
+                    function output(){
+                        $.ajax({
+                            type: "GET",
+                            contentType: "application/json;charset=UTF-8",
+                            dataType:"json",
+                            url: "/qrcode",
+                            success:function(response){
+                                console.log(response);
+                            }
+                        });
+                    }
+                </script>
             </span>
         </div>
     </div>
 
     <div class="col-md-4 .col-md-12 .col-sm-12 .col-xs-12 main-author">
-            <h2>站长信息</h2>
+            <h2></h2>
             <hr class="col-md-10 .col-md-12 .col-sm-12 .col-xs-12">
         </div>
 
     <div class="row main">
         <!-- 发现 -->
-        <div class="col-lg-9 .col-md-12 .col-sm-12 .col-xs-12">
+        <div class="col-lg-9 .col-md-12 .col-sm-12 .col-xs-12" style="width: 800px">
             <div class="media index-content" th:each="question : ${pagination.data}">
                 <div class="media-left">
                     <a class="content-instance" href="#">
                         <img class="media-object img-circle" th:src="${question.getUser().getAvatarUrl()}">
                     </a>
                 </div>
-
                 <div class="media-body">
-                    <a class="index-title" th:href="@{'/question/'+${question.getId()}}">
+                    <span th:if="${session.user != null}">
+                    <input type="hidden" id="userId" th:value="${session.user.accountId}">
+                    </span>
+                    <a class="index-title"  th:href="@{'/question/'+${question.getId()}}">
                     <h4 class="media-heading">
                     <span th:text="${question.getTitle()}"></span>
                     </h4>
                     </a>
-<!--                    <h5 th:text="${question.getDescription()}"></h5>-->
-                    <span th:text="${question.getCommentCount()}"></span>个评论 •
-                    <span th:text="${question.getViewCount()}"></span>次浏览 •
-                    <span th:text="${#calendars.format(question.getGmtCreate(),'dd MMMM yyyy')}"></span>
+                    <span th:text="${#calendars.format(question.getGmtCreate(),'yyyy MMMM dd')}"></span>
+                    <div style="width: 210px;float:right">
+                        <div style="width: 100px;float:left">
+                        <img src="/images/eye.png" style="width: 20px;margin-left: 10px">
+                        <span th:text="${question.getViewCount()}"></span>次浏览
+                        </div>
+                        <div style="width: 100px;float:right">
+                        <img src="/images/comment2.png" style="width: 20px;margin-left: 10px">
+                        <span th:text="${question.getCommentCount()}"></span>个评论
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -124,7 +178,20 @@
     <!-- 热门话题 -->
     <div class="">
         <div class="col-lg-3 .col-md-12 .col-sm-12 .col-xs-12 main-hotspot">
-            <h2>热门话题</h2>
+            <h2>推荐日记</h2>
+            <ul id="hotDiary" class="list-group">
+<!--                <li class="list-group-item list-group-item-success">Dapibus ac facilisis in</li>-->
+<!--                <li class="list-group-item list-group-item-info">Cras sit amet nibh libero</li>-->
+<!--                <li class="list-group-item list-group-item-warning">Porta ac consectetur ac</li>-->
+<!--                <li class="list-group-item list-group-item-danger">Vestibulum at eros</li>-->
+            </ul>
+            <h2>榜上文章</h2>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-success">Dapibus ac facilisis in</a>
+                <a href="#" class="list-group-item list-group-item-info">Cras sit amet nibh libero</a>
+                <a href="#" class="list-group-item list-group-item-warning">Porta ac consectetur ac</a>
+                <a href="#" class="list-group-item list-group-item-danger">Vestibulum at eros</a>
+            </div>
         </div>
     </div>
 </div>

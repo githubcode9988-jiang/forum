@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import practice.example.forum.dto.NotificationDTO;
 import practice.example.forum.dto.PaginationDTO;
-import practice.example.forum.dto.QuestionDTO;
 import practice.example.forum.enums.NotificationEnum;
 import practice.example.forum.enums.NotificationTypeEnum;
 import practice.example.forum.exception.CustomizeErrorCode;
@@ -14,11 +13,15 @@ import practice.example.forum.mapper.NotificationExcMapper;
 import practice.example.forum.mapper.NotificationMapper;
 import practice.example.forum.mapper.QuestionMapper;
 import practice.example.forum.mapper.UserMapper;
-import practice.example.forum.model.*;
+import practice.example.forum.model.Notification;
+import practice.example.forum.model.NotificationExample;
+import practice.example.forum.model.Question;
+import practice.example.forum.model.User;
 import practice.example.forum.service.NotificationService;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @Author jiang
@@ -98,6 +101,114 @@ public class NotificationServiceImpl implements NotificationService {
     public Long unReadByLetter(String accountId) {
         return  notificationExcMapper.unReadByLetter(Integer.valueOf(accountId),NotificationTypeEnum.UNREAD.getStatus(),
                 NotificationEnum.INVITE_MESSAGE.getType());
+    }
+
+    @Override
+    public PaginationDTO listByLikeCount(String accountId, Integer page, Integer size) {
+        PaginationDTO<NotificationDTO> paginationDTO = new PaginationDTO<>();
+        Integer totalPage;
+
+        NotificationExample example = new NotificationExample();
+        example.createCriteria().andReceiverEqualTo(Long.valueOf(accountId))
+                .andTypeEqualTo(NotificationEnum.LIKE_SUCCESS.getType());
+        Integer total = (int)notificationMapper.countByExample(example);
+        if(total % size == 0){
+            totalPage = total / size;
+        }else{
+            totalPage = total / size + 1;
+        }
+        if(page <= 1){
+            page = 1;
+        }
+        if(page > totalPage){
+            page = totalPage;
+        }
+        paginationDTO.setPagination(totalPage,page);
+
+        //分页 size*(page-1),size
+        Integer offset = size * (page-1);
+        if(offset < 0){
+            offset = 1;
+        }
+
+        List<Notification> listNotification = notificationExcMapper.
+                findNotificationByLetter(Integer.valueOf(accountId),
+                        offset,
+                        size,NotificationEnum.LIKE_SUCCESS.getType());
+
+        if(listNotification.size() == 0){
+            return paginationDTO;
+        }
+        List<NotificationDTO> notificationDTOS = new ArrayList<>();
+
+        for (Notification notification : listNotification) {
+            NotificationDTO notificationDTO = new NotificationDTO();
+            BeanUtils.copyProperties(notification,notificationDTO);
+            notificationDTO.setTypeName(NotificationEnum.nameOfType(NotificationEnum.LIKE_SUCCESS.getType()));
+            notificationDTOS.add(notificationDTO);
+        }
+        paginationDTO.setData(notificationDTOS);
+        return paginationDTO;
+    }
+
+    @Override
+    public PaginationDTO listByAttention(String accountId, Integer page, Integer size) {
+        PaginationDTO<NotificationDTO> paginationDTO = new PaginationDTO<>();
+        Integer totalPage;
+
+        NotificationExample example = new NotificationExample();
+        example.createCriteria().andReceiverEqualTo(Long.valueOf(accountId))
+                .andTypeEqualTo(NotificationEnum.ATTENTION_USER.getType());
+        Integer total = (int)notificationMapper.countByExample(example);
+        if(total % size == 0){
+            totalPage = total / size;
+        }else{
+            totalPage = total / size + 1;
+        }
+        if(page <= 1){
+            page = 1;
+        }
+        if(page > totalPage){
+            page = totalPage;
+        }
+        paginationDTO.setPagination(totalPage,page);
+
+        //分页 size*(page-1),size
+        Integer offset = size * (page-1);
+        if(offset < 0){
+            offset = 1;
+        }
+
+        List<Notification> listNotification = notificationExcMapper.
+                findNotificationByLetter(Integer.valueOf(accountId),
+                        offset,
+                        size,NotificationEnum.ATTENTION_USER.getType());
+
+        if(listNotification.size() == 0){
+            return paginationDTO;
+        }
+        List<NotificationDTO> notificationDTOS = new ArrayList<>();
+
+        for (Notification notification : listNotification) {
+            NotificationDTO notificationDTO = new NotificationDTO();
+            BeanUtils.copyProperties(notification,notificationDTO);
+            notificationDTO.setTypeName(NotificationEnum.nameOfType(NotificationEnum.ATTENTION_USER.getType()));
+            notificationDTOS.add(notificationDTO);
+        }
+        paginationDTO.setData(notificationDTOS);
+        return paginationDTO;
+    }
+
+    @Override
+    public Long unReadByAttention(String accountId) {
+        return  notificationExcMapper.unReadByLetter(Integer.valueOf(accountId),NotificationTypeEnum.UNREAD.getStatus(),
+                NotificationEnum.ATTENTION_USER.getType());
+    }
+
+    @Override
+    public Long unReadByLike(String accountId) {
+        return  notificationExcMapper.unReadByLetter(Integer.valueOf(accountId),NotificationTypeEnum.UNREAD.getStatus(),
+                NotificationEnum.LIKE_SUCCESS.getType());
     }
 
     @Override

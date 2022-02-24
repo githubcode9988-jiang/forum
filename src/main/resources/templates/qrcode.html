@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--    <script src="js/jquery-3.5.1.js" type="application/javascript"></script>-->
+<!--    <script src="js/qrcode.js" type="application/javascript"></script>-->
+    <script type='text/javascript' src='http://cdn.staticfile.org/jquery/2.1.1/jquery.min.js'></script>
+    <script src="https://cdn.bootcss.com/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+</head>
+<body>
+
+   <div class="panel panel-default" style="width: 300px;height: 300px;">
+       <div id="qrcode" style="width: 300px;height: 300px;">
+            <button type="button" onclick="output()">login</button>
+       </div>
+   </div>
+
+<script>
+
+        //转换中文字符串
+        function toUtf8(str) {
+            var out, i, len, c;
+            out = "";
+            console.log(typeof(str))
+            len = str.length;
+            for (i = 0; i < len; i++) {
+                c = str.charCodeAt(i);
+                if ((c >= 0x0001) && (c <= 0x007F)) {
+                    out += str.charAt(i);
+                } else if (c > 0x07FF) {
+                    out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+                    out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                } else {
+                    out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                }
+            }
+            return out;
+        }
+
+        //生产二维码
+        function output(){
+            var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx97efc5965e47b1db&redirect_uri=http%3A%2F%2F7a13-211-146-16-132.ngrok.io%2Fcallbackweixin&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
+            //先情况
+            $("#qrcode").empty();
+            //中文格式转换
+            var str = toUtf8(url);
+            //生产二维码
+            $("#qrcode").qrcode({
+                render:"canvas",
+                width:300,
+                height:300,
+                text:str
+            });
+        }
+
+</script>
+
+</body>
+</html>

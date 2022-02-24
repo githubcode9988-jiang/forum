@@ -1,8 +1,11 @@
 package practice.example.forum.dto;
 
 import lombok.Data;
+import practice.example.forum.enums.SearchFriendsEnum;
 import practice.example.forum.exception.CustomizeErrorCode;
 import practice.example.forum.exception.CustomizeException;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * @Author jiang
@@ -30,11 +33,26 @@ public class ResultDTO<T> {
         return errorOf(errorCode.getCode(),errorCode.getMessage());
     }
 
+    public static ResultDTO errorOf(SearchFriendsEnum searchCode){
+        return errorOf(searchCode.getStatus(),searchCode.getMessage());
+    }
+
+    public static ResultDTO errorOf(String message){
+        return errorOf(500,message);
+    }
+
     public static ResultDTO okOf(){
          ResultDTO resultDTO = new ResultDTO();
          resultDTO.setCode(200);
          resultDTO.setMessage("请求成功");
          return resultDTO;
+    }
+
+    public static ResultDTO okOf(Integer code){
+        ResultDTO resultDTO = new ResultDTO();
+        resultDTO.setCode(code);
+        resultDTO.setMessage("请求成功");
+        return resultDTO;
     }
 
     public static <T> ResultDTO okOf(T t) {

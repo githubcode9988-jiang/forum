@@ -1,28 +1,27 @@
 package practice.example.forum.provider;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import practice.example.forum.dto.GiteeAccessTokenDTO;
 import practice.example.forum.dto.GiteeTokenInfoDTO;
 import practice.example.forum.dto.GiteeUser;
-import practice.example.forum.dto.GithubUser;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 /**
  * @Author jiang
  * @Created Project on 2022/1/7
  */
 @Component
+@Slf4j
 public class GithubProvider {
 
 
      public String getAccessToken(GiteeAccessTokenDTO accessTokenDTO){
          MediaType JSONs = MediaType.get("application/json; charset=utf-8");
-
          OkHttpClient client = new OkHttpClient();
          String json = JSON.toJSONString(accessTokenDTO);
          RequestBody body = RequestBody.create(JSONs,json);
@@ -34,8 +33,8 @@ public class GithubProvider {
              Response response = client.newCall(request).execute();
              String res = response.body().string();
              GiteeTokenInfoDTO user = JSON.parseObject(res, GiteeTokenInfoDTO.class);
-             System.out.println(user.getAccess_token());
              String token = user.getAccess_token();
+             log.info("Token Obtained by the user {}",token);
              return token;
          }catch (Exception e){
             e.printStackTrace();
@@ -46,7 +45,7 @@ public class GithubProvider {
      public GiteeUser getToke(String accessToke) {
          OkHttpClient client = new OkHttpClient();
          Request request = new Request.Builder()
-                 .url("https://gitee.com/api/v5/user?access_token="+accessToke)
+                 .url("https://api.weixin.qq.com/sns/userinfo?access_token="+accessToke)
                  .build();
          try{
              Response response = client.newCall(request).execute();

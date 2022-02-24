@@ -15,7 +15,9 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode{
     CONTENT_IS_EMPTY(2007,"内容为空！"),
     PARAMETER_IS_NULL(2008,"参数为Null!"),
     READ_NOTIFICATION_FALL(2009,"兄弟，你这是读别人的信息呢！"),
-    NOTIFICATION_NOT_FOUND(2010,"消息莫非不翼而飞了！");
+    NOTIFICATION_NOT_FOUND(2010,"消息莫非不翼而飞了！"),
+    ASK_USERINFO_IS_NULL(2011,"请求用户信息为空！"),
+    CAN_NOT_LIKE_AGAIN(2012,"不能重复点赞!");
 
     private String message;
     private Integer code;
